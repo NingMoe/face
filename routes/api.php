@@ -19,6 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get("face/index", "FaceController@index");
-Route::get("face/create", "FaceController@create");
+Route::post("face/create", "FaceController@create");
 Route::get("face/search", "FaceController@search");
 Route::get("face/get-face-image", "FaceController@getFaceImage");

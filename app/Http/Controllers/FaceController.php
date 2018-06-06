@@ -35,6 +35,8 @@ class FaceController extends Controller
 
     //人脸注册
     public function create(Request $request) {
+        var_dump($request->input("photo"));
+        exit;
         $image = $request->input("image");
 
         $image = "http://imgstore.cdn.sogou.com/app/a/100540002/712864.jpg";
