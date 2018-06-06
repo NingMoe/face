@@ -35,7 +35,7 @@ class FaceController extends Controller
 
     //人脸注册
     public function create(Request $request) {
-        var_dump($request->input("photo"));
+        var_dump($request->input("photo"),$_FILES, $_REQUEST);
         exit;
         $image = $request->input("image");
 

@@ -2,7 +2,7 @@
 /database
 /public
 /resources
-/storage
+/storagevim
 /tests
 /.idea
 Homestead.json
