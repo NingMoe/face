@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FaceController extends Controller
 {
@@ -35,8 +36,23 @@ class FaceController extends Controller
 
     //人脸注册
     public function create(Request $request) {
-        var_dump($request->input("photo"),$_FILES, $_REQUEST);
-        exit;
+        $file = $request->file("photo");
+        // 文件是否上传成功
+        if ($file->isValid()) {
+
+            // 获取文件相关信息
+            $originalName = $file->getClientOriginalName(); // 文件原名
+            $ext = $file->getClientOriginalExtension();     // 扩展名
+            $realPath = $file->getRealPath();   //临时文件的绝对路径
+            $type = $file->getClientMimeType();     // image/jpeg
+
+            // 上传文件
+            $filename = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' . $ext;
+            // 使用我们新建的uploads本地存储空间（目录）
+            $bool = Storage::disk('uploads')->put($filename, file_get_contents($realPath));
+            var_dump($bool);
+        }
+
         $image = $request->input("image");
 
         $image = "http://imgstore.cdn.sogou.com/app/a/100540002/712864.jpg";
