@@ -87,7 +87,7 @@ class FaceController extends Controller
         $image = $request->input("photo");
         $groupIdList = "sym," . $this->groupId;
         $options = [];
-        $options["max_user_num"] = 3;
+        $options["max_user_num"] = 20;
 
         // 调用人脸搜索
         $result = $this->aipClient->search($image, $this->imageType, $groupIdList);
