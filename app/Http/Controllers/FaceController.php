@@ -64,7 +64,7 @@ class FaceController extends Controller
             $options = array();
             $options["user_info"] = $image;
             $options["quality_control"] = "NORMAL";
-            $options["liveness_control"] = "LOW";
+            $options["liveness_control"] = "NONE";
             $result = $this->aipClient->addUser($image, $this->imageType, $this->groupId, $userId, $options);
 
             //若已经存在则更新
