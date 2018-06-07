@@ -97,7 +97,7 @@ class FaceController extends Controller
             $userList = $result['result']['user_list'] ?? [];
         }
 
-        echo $this->responseJson($result, ['user_list' => $userList]);
+        echo $this->responseJson($result, ['user_list' => $result]);
     }
 
     private function responseJson($_result, $data = []) {
