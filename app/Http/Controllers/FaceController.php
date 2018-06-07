@@ -106,7 +106,7 @@ class FaceController extends Controller
             $userList = $result['result']['user_list'] ?? [];
             foreach ($userList as $key => $user) {
                 //排除自己
-                if ($user['score'] == 100) {
+                if (intval($user['score']) == 100) {
                     unset($userList[$key]);
                     continue;
                 }
