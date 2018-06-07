@@ -82,7 +82,7 @@ class FaceController extends Controller
         if (empty($getFaceResult['error_code'])) {
             $faceList = $getFaceResult['result']['face_list'];
         }
-        if (!empty($faceList['face_list']) && count($faceList['face_list']) > 0) {
+        if (!empty($faceList) && count($faceList) > 0) {
             $result = $this->aipClient->updateUser($image, $this->imageType, $this->groupId, $userId, $options);
         } else {
             $result = $this->aipClient->addUser($image, $this->imageType, $this->groupId, $userId, $options);
