@@ -34,11 +34,12 @@ class FaceController extends Controller
         var_dump($request);
     }
 
-    //人脸注册
-    public function create(Request $request) {
+    //
+    public function savePhoto(Request $request) {
         $file = $request->file("photo");
         // 文件是否上传成功
-        $result = ['error_code' => 100, "error_msg" => "un valid file"];
+        $data = [];
+        $result = ['error_code' => 0, "error_msg" => "success"];
         if ($file->isValid()) {
             // 获取文件相关信息
             $originalName = $file->getClientOriginalName(); // 文件原名
@@ -54,39 +55,42 @@ class FaceController extends Controller
                 echo $this->responseJson(['error_code' => 100, "error_msg" => "file save failed"]);
                 exit;
             }
-
-//            $image = "http://face.anlaosun.xyz/uploads/" . $filename;
-            $image = env('APP_URL') . "/uploads/" . $filename;
-//            $image = "http://face.anlaosun.xyz/uploads/2018-06-07-01-25-02-5b18896e40089.jpg";
-            echo $image;
-            $userId = time() . mt_rand(1000, 9999);
-            // 如果有可选参数
-            $options = array();
-            $options["user_info"] = $image;
-            $options["quality_control"] = "NORMAL";
-            $options["liveness_control"] = "NONE";
-            $result = $this->aipClient->addUser($image, $this->imageType, $this->groupId, $userId, $options);
-
-            //若已经存在则更新
-            if ($result['error_code'] == self::FACE_IS_ALREADY_EXIST_CODE) {
-                $result = $this->aipClient->updateUser($image, $this->imageType, $this->groupId, $userId, $options);
-            }
+            $data['photo'] = env('APP_URL') . "/uploads/" . $filename;
         }
 
+        echo $this->responseJson($result, $data);
+    }
+
+    //人脸注册
+    public function create(Request $request) {
+        $image = $request->input("photo");
+        if (empty($image)) {
+            $result = ['error_code' => 100, "error_msg" => "图片为空"];
+            exit($this->responseJson($result));
+        }
+        $userId = time() . mt_rand(1000, 9999);
+        // 如果有可选参数
+        $options = [];
+        $options["user_info"] = $image;
+        $result = $this->aipClient->addUser($image, $this->imageType, $this->groupId, $userId, $options);
+
+        //若已经存在则更新
+        if ($result['error_code'] == self::FACE_IS_ALREADY_EXIST_CODE) {
+            $result = $this->aipClient->updateUser($image, $this->imageType, $this->groupId, $userId, $options);
+        }
 
         echo $this->responseJson($result);
     }
 
     //人脸搜索
     public function search(Request $request) {
-
-        $image = "http://imgstore.cdn.sogou.com/app/a/100540002/712864.jpg";
-
+        $image = $request->input("photo");
         $groupIdList = "sym," . $this->groupId;
+        $options = [];
+        $options["max_user_num"] = 3;
 
         // 调用人脸搜索
         $result = $this->aipClient->search($image, $this->imageType, $groupIdList);
-
 
         $userList = [];
         if (!$result['error_code']) {
@@ -99,7 +103,9 @@ class FaceController extends Controller
     private function responseJson($_result, $data = []) {
         $result = ['error_code' => $_result['error_code'], 'error_msg' => $_result['error_msg']];
 
-        $result = array_merge($result, $data);
+        if (!empty($data) && is_array($data)) {
+            $result = array_merge($result, $data);
+        }
         return json_encode($result, JSON_UNESCAPED_UNICODE);
     }
 }
