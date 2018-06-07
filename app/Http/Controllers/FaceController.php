@@ -87,17 +87,27 @@ class FaceController extends Controller
         $image = $request->input("photo");
         $groupIdList = "sym," . $this->groupId;
         $options = [];
-        $options["max_user_num"] = 20;
+        $options["max_user_num"] = 4;
 
         // 调用人脸搜索
-        $result = $this->aipClient->search($image, $this->imageType, $groupIdList);
+        $result = $this->aipClient->search($image, $this->imageType, $groupIdList, $options);
 
         $userList = [];
         if (!$result['error_code']) {
             $userList = $result['result']['user_list'] ?? [];
+            foreach ($userList as $key => $user) {
+                //排除自己
+                if ($user['score'] == 100) {
+                    unset($userList[$key]);
+                    continue;
+                }
+                $userList[$key]['score'] = number_format($user['score'], 2);
+            }
+            //取前三张
+            $userList = array_slice($userList, 0 ,3);
         }
 
-        echo $this->responseJson($result, ['user_list' => $result]);
+        echo $this->responseJson($result, ['user_list' => $userList]);
     }
 
     private function responseJson($_result, $data = []) {
