@@ -73,11 +73,17 @@ class FaceController extends Controller
         // 如果有可选参数
         $options = [];
         $options["user_info"] = $image;
-        $result = $this->aipClient->addUser($image, $this->imageType, $this->groupId, $userId, $options);
 
-        //若已经存在则更新
-        if ($result['error_code'] == self::FACE_IS_ALREADY_EXIST_CODE) {
+        //此用户是否已存在对应的人脸
+        $faceList = [];
+        $getFaceResult = $this->aipClient->faceGetlist($userId, $this->groupId);
+        if (empty($getFaceResult['error_code'])) {
+            $faceList = $getFaceResult['result']['face_list'];
+        }
+        if (!empty($faceList['face_list']) && count($faceList['face_list']) > 0) {
             $result = $this->aipClient->updateUser($image, $this->imageType, $this->groupId, $userId, $options);
+        } else {
+            $result = $this->aipClient->addUser($image, $this->imageType, $this->groupId, $userId, $options);
         }
 
         echo $this->responseJson($result);
