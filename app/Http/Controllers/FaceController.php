@@ -31,7 +31,7 @@ class FaceController extends Controller
     }
 
     public function getFaceImage(Request $request) {
-        var_dump($request);
+        echo md5("明月清风[机智]https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJ9W9hqWcg1nzt9L7m4Gsp83mCs4VF7bHRdaHoPyHjrZMfxX3o0cNPia9kgCxEBzkKiaRpsQiakVVtxg/132");
     }
 
     //
@@ -64,11 +64,12 @@ class FaceController extends Controller
     //人脸注册
     public function create(Request $request) {
         $image = $request->input("photo");
-        if (empty($image)) {
-            $result = ['error_code' => 100, "error_msg" => "图片为空"];
+        $userinfo = $request->input("userinfo");
+        if (empty($image) || empty($userinfo)) {
+            $result = ['error_code' => 100, "error_msg" => "用户信息或图片为空"];
             exit($this->responseJson($result));
         }
-        $userId = time() . mt_rand(1000, 9999);
+        $userId = md5($userinfo);
         // 如果有可选参数
         $options = [];
         $options["user_info"] = $image;
