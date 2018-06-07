@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class FaceController extends Controller
@@ -77,6 +78,7 @@ class FaceController extends Controller
         //此用户是否已存在对应的人脸
         $faceList = [];
         $getFaceResult = $this->aipClient->faceGetlist($userId, $this->groupId);
+        file_put_contents("/data/www/face/public/logs/face-get-list-" . date("Ymd") . ".txt", json_encode($getFaceResult, true), FILE_APPEND);
         if (empty($getFaceResult['error_code'])) {
             $faceList = $getFaceResult['result']['face_list'];
         }
