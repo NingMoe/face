@@ -57,7 +57,7 @@ class FaceController extends Controller
 
 //            $image = "http://face.anlaosun.xyz/uploads/" . $filename;
             $image = env('APP_URL') . "/uploads/" . $filename;
-            $image = "http://face.anlaosun.xyz/uploads/2018-06-07-01-25-02-5b18896e40089.jpg";
+//            $image = "http://face.anlaosun.xyz/uploads/2018-06-07-01-25-02-5b18896e40089.jpg";
             echo $image;
             $userId = time() . mt_rand(1000, 9999);
             // 如果有可选参数
